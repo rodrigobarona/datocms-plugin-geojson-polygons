@@ -10,7 +10,7 @@ import {
   TextareaField,
 } from 'datocms-react-ui';
 import MapView, { type MapViewHandlers } from '../../components/MapView';
-import { BASEMAP_IDS, getBasemap, type BasemapId } from '../../lib/basemaps';
+import type { BasemapId } from '../../lib/basemaps';
 import { createEditorState, editorReducer } from '../../lib/editorState';
 import { serializeShapes, shapesFromFieldValue } from '../../lib/fieldValue';
 import { ImportError, parseImportText } from '../../lib/importText';
@@ -105,17 +105,6 @@ export default function PolygonField({ ctx }: PolygonFieldProps) {
   return (
     <Canvas ctx={ctx}>
       <div className={styles.toolbar}>
-        <ButtonGroup>
-          {BASEMAP_IDS.map((id) => (
-            <ButtonGroupButton
-              key={id}
-              selected={id === basemapId}
-              onClick={() => setBasemapId(id)}
-            >
-              {getBasemap(id).label}
-            </ButtonGroupButton>
-          ))}
-        </ButtonGroup>
         <div className={styles.actions}>
           <Button
             type="button"
@@ -153,6 +142,7 @@ export default function PolygonField({ ctx }: PolygonFieldProps) {
         zoom={defaults.zoom}
         fitRequest={state.fitRequest}
         disabled={disabled}
+        onBasemapChange={setBasemapId}
         {...handlers}
       />
 

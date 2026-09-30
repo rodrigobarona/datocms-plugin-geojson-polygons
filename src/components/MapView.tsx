@@ -13,6 +13,7 @@ import {
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getBasemap, type BasemapId } from '../lib/basemaps';
+import BasemapControl from './BasemapControl';
 import type { LngLat } from '../lib/geometry';
 import { configureMapLibreWorker, isCoarsePointer } from '../lib/maplibre';
 import { buildOverlayData, getShapesBounds } from '../lib/overlay';
@@ -57,6 +58,7 @@ type MapViewProps = MapViewHandlers & {
   zoom: number;
   fitRequest: number;
   disabled: boolean;
+  onBasemapChange: (id: BasemapId) => void;
 };
 
 function addOverlay(map: MapLibreMap): void {
@@ -189,6 +191,7 @@ export default function MapView({
   zoom,
   fitRequest,
   disabled,
+  onBasemapChange,
   ...handlers
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -427,6 +430,7 @@ export default function MapView({
   return (
     <div className={styles.frame}>
       <div ref={containerRef} className={styles.map} />
+      <BasemapControl value={basemapId} onChange={onBasemapChange} />
       <div className={styles.hint}>{hint}</div>
     </div>
   );

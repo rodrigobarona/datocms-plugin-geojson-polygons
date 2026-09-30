@@ -6,6 +6,12 @@ Draw and edit polygons on a map inside a DatoCMS JSON field. Editors click on an
 
 The map uses [MapLibre GL](https://maplibre.org/) with [OpenFreeMap](https://openfreemap.org/) tiles, so no API key or billing account is needed.
 
+## Demo
+
+![Drawing, editing, importing, and switching basemaps in the polygon field](docs/demo.gif)
+
+The demo draws a polygon point by point, drags a vertex, inserts a point on an edge, undoes a step, switches to the satellite basemap, imports coordinates, and fits the map to every shape. [Watch the full-quality MP4](docs/demo.mp4).
+
 ## What editors see
 
 ![Polygon field editor preview](marketplace/preview.jpg)
@@ -18,7 +24,7 @@ The map uses [MapLibre GL](https://maplibre.org/) with [OpenFreeMap](https://ope
 - Click a polygon, or its button below the map, to select it. The table lists the selected polygon's latitude and longitude pairs.
 - **Undo** reverts the last change, one step at a time, including drags and deletions.
 - **Import** accepts GeoJSON (`FeatureCollection`, `Feature`, `Polygon`, `MultiPolygon`, `LineString`), raw coordinate arrays, or one `longitude, latitude` pair per line, with a blank line between shapes.
-- Switch between the Bright, Liberty, Dark, and Satellite basemaps.
+- A layers button on the map switches between the Bright, Liberty, Dark, and Satellite basemaps.
 
 Scroll-wheel zoom needs Ctrl or ⌘ held down, and touch panning needs two fingers, so scrolling the record form never moves the map by accident.
 
@@ -69,7 +75,7 @@ Localized fields work too: each locale keeps its own polygons.
 ## Map data and licenses
 
 - The Bright, Liberty, and Dark basemaps come from [OpenFreeMap](https://openfreemap.org/), using © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors data.
-- Satellite imagery comes from [EOX Sentinel-2 cloudless](https://s2maps.eu/), licensed [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This license does not allow commercial use, so check that it fits your project before using that basemap.
+- Satellite imagery comes from [EOX Sentinel-2 cloudless](https://s2maps.eu/), licensed [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). That license does not allow commercial use.
 
 ## Development
 

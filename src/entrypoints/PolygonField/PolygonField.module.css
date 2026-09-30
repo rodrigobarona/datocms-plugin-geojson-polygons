@@ -8,6 +8,7 @@
 }
 
 .toolbar {
+  justify-content: flex-end;
   margin-bottom: var(--spacing-s);
 }
 

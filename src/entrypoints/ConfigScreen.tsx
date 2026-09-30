@@ -92,7 +92,7 @@ export default function ConfigScreen({ ctx }: ConfigScreenProps) {
             id="default-basemap"
             name="default-basemap"
             label="Default basemap"
-            hint="Satellite imagery is licensed CC BY-NC-SA 4.0 by EOX; check it fits your use."
+            hint="Satellite imagery is licensed CC BY-NC-SA 4.0 by EOX, which does not allow commercial use."
             value={BASEMAP_OPTIONS.find((option) => option.value === basemap) ?? null}
             onChange={handleBasemapChange}
             selectInputProps={{ isClearable: false, options: BASEMAP_OPTIONS }}
