@@ -17,6 +17,7 @@ import { ImportError, parseImportText } from '../../lib/importText';
 import { getValueAtPath, normalizePluginParameters } from '../../lib/parameters';
 import { canClose, findShape, getShapeColor, isPolygon } from '../../lib/shapes';
 import styles from './PolygonField.module.css';
+import { useContentHeight } from './useContentHeight';
 
 type PolygonFieldProps = {
   ctx: RenderFieldExtensionCtx;
@@ -102,175 +103,179 @@ export default function PolygonField({ ctx }: PolygonFieldProps) {
     }
   }
 
+  const frameRef = useContentHeight(ctx);
+
   return (
-    <Canvas ctx={ctx}>
-      <div className={styles.toolbar}>
-        <div className={styles.actions}>
-          <Button
-            type="button"
-            buttonSize="s"
-            disabled={disabled || !activeShape || !canClose(activeShape)}
-            onClick={() => dispatch({ type: 'closeShape' })}
-          >
-            Close shape
-          </Button>
-          <Button
-            type="button"
-            buttonSize="s"
-            disabled={disabled || (activeShape !== null && activeShape.points.length === 0)}
-            onClick={() => dispatch({ type: 'newShape' })}
-          >
-            New polygon
-          </Button>
-          <Button
-            type="button"
-            buttonSize="s"
-            buttonType="muted"
-            disabled={disabled || state.past.length === 0}
-            onClick={() => dispatch({ type: 'undo' })}
-          >
-            Undo
-          </Button>
-        </div>
-      </div>
-
-      <MapView
-        shapes={shapes}
-        activeShapeId={activeShapeId}
-        basemapId={basemapId}
-        center={defaults.center}
-        zoom={defaults.zoom}
-        fitRequest={state.fitRequest}
-        disabled={disabled}
-        onBasemapChange={setBasemapId}
-        {...handlers}
-      />
-
-      {shapes.length > 0 ? (
-        <div className={styles.shapes}>
-          <ButtonGroup>
-            {shapes.map((shape, index) => (
-              <ButtonGroupButton
-                key={shape.id}
-                selected={shape.id === activeShapeId}
-                onClick={() => dispatch({ type: 'selectShape', shapeId: shape.id })}
-              >
-                <span
-                  className={styles.swatch}
-                  style={{ backgroundColor: getShapeColor(index) }}
-                />
-                {isPolygon(shape) ? `Polygon ${index + 1}` : `Draft ${index + 1}`}
-              </ButtonGroupButton>
-            ))}
-          </ButtonGroup>
-        </div>
-      ) : null}
-
-      {activeShape && !activeShape.isClosed && activeShape.points.length > 0 ? (
-        <FieldHint>
-          This shape is still open and is not saved yet. Add at least three points, then
-          press “Close shape”.
-        </FieldHint>
-      ) : null}
-
-      {activeShape && activeShape.points.length > 0 ? (
-        <div className={styles.coordinates}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-              </tr>
-            </thead>
-            <tbody>
-              {activeShape.points.map(([lng, lat], index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{lat.toFixed(COORDINATE_DIGITS)}</td>
-                  <td>{lng.toFixed(COORDINATE_DIGITS)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : null}
-
-      <div className={styles.footer}>
-        <FieldHint>
-          {polygonCount > 0
-            ? `Saved as a GeoJSON FeatureCollection with ${pluralize(polygonCount, 'polygon')}.`
-            : 'No polygons saved yet.'}
-        </FieldHint>
-        <div className={styles.actions}>
-          <Button
-            type="button"
-            buttonSize="s"
-            buttonType="muted"
-            disabled={shapes.length === 0}
-            onClick={() => dispatch({ type: 'fitToShapes' })}
-          >
-            Fit to polygons
-          </Button>
-          <Button
-            type="button"
-            buttonSize="s"
-            buttonType="muted"
-            disabled={disabled}
-            onClick={() => setImportOpen((open) => !open)}
-          >
-            {importOpen ? 'Cancel import' : 'Import'}
-          </Button>
-          <Button
-            type="button"
-            buttonSize="s"
-            buttonType="muted"
-            disabled={disabled || !activeShape}
-            onClick={() => dispatch({ type: 'deleteActiveShape' })}
-          >
-            Delete polygon
-          </Button>
-          <Button
-            type="button"
-            buttonSize="s"
-            buttonType="negative"
-            disabled={disabled || shapes.length === 0}
-            onClick={() => void handleClearAll()}
-          >
-            Clear all
-          </Button>
-        </div>
-      </div>
-
-      {importOpen ? (
-        <div className={styles.import}>
-          <TextareaField
-            id={`${ctx.fieldPath}-import`}
-            name="import"
-            label="Coordinates or GeoJSON"
-            hint="Paste GeoJSON (FeatureCollection, Feature, Polygon, MultiPolygon), a coordinate array, or one “longitude, latitude” pair per line. Separate shapes with a blank line."
-            placeholder={'-9.1393, 38.7223\n-9.1350, 38.7250\n-9.1300, 38.7200'}
-            value={importText}
-            onChange={(value) => {
-              setImportText(value);
-              setImportError(undefined);
-            }}
-            textareaInputProps={{ rows: 6, monospaced: true }}
-          />
-          {importError ? <FieldError>{importError}</FieldError> : null}
-          <div className={styles.importActions}>
+    <Canvas ctx={ctx} noAutoResizer>
+      <div ref={frameRef}>
+        <div className={styles.toolbar}>
+          <div className={styles.actions}>
             <Button
               type="button"
               buttonSize="s"
-              buttonType="primary"
-              disabled={!importText.trim()}
-              onClick={handleImport}
+              disabled={disabled || !activeShape || !canClose(activeShape)}
+              onClick={() => dispatch({ type: 'closeShape' })}
             >
-              Add to map
+              Close shape
+            </Button>
+            <Button
+              type="button"
+              buttonSize="s"
+              disabled={disabled || (activeShape !== null && activeShape.points.length === 0)}
+              onClick={() => dispatch({ type: 'newShape' })}
+            >
+              New polygon
+            </Button>
+            <Button
+              type="button"
+              buttonSize="s"
+              buttonType="muted"
+              disabled={disabled || state.past.length === 0}
+              onClick={() => dispatch({ type: 'undo' })}
+            >
+              Undo
             </Button>
           </div>
         </div>
-      ) : null}
+
+        <MapView
+          shapes={shapes}
+          activeShapeId={activeShapeId}
+          basemapId={basemapId}
+          center={defaults.center}
+          zoom={defaults.zoom}
+          fitRequest={state.fitRequest}
+          disabled={disabled}
+          onBasemapChange={setBasemapId}
+          {...handlers}
+        />
+
+        {shapes.length > 0 ? (
+          <div className={styles.shapes}>
+            <ButtonGroup>
+              {shapes.map((shape, index) => (
+                <ButtonGroupButton
+                  key={shape.id}
+                  selected={shape.id === activeShapeId}
+                  onClick={() => dispatch({ type: 'selectShape', shapeId: shape.id })}
+                >
+                  <span
+                    className={styles.swatch}
+                    style={{ backgroundColor: getShapeColor(index) }}
+                  />
+                  {isPolygon(shape) ? `Polygon ${index + 1}` : `Draft ${index + 1}`}
+                </ButtonGroupButton>
+              ))}
+            </ButtonGroup>
+          </div>
+        ) : null}
+
+        {activeShape && !activeShape.isClosed && activeShape.points.length > 0 ? (
+          <FieldHint>
+            This shape is still open and is not saved yet. Add at least three points, then
+            press “Close shape”.
+          </FieldHint>
+        ) : null}
+
+        {activeShape && activeShape.points.length > 0 ? (
+          <div className={styles.coordinates}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activeShape.points.map(([lng, lat], index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{lat.toFixed(COORDINATE_DIGITS)}</td>
+                    <td>{lng.toFixed(COORDINATE_DIGITS)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+
+        <div className={styles.footer}>
+          <FieldHint>
+            {polygonCount > 0
+              ? `Saved as a GeoJSON FeatureCollection with ${pluralize(polygonCount, 'polygon')}.`
+              : 'No polygons saved yet.'}
+          </FieldHint>
+          <div className={styles.actions}>
+            <Button
+              type="button"
+              buttonSize="s"
+              buttonType="muted"
+              disabled={shapes.length === 0}
+              onClick={() => dispatch({ type: 'fitToShapes' })}
+            >
+              Fit to polygons
+            </Button>
+            <Button
+              type="button"
+              buttonSize="s"
+              buttonType="muted"
+              disabled={disabled}
+              onClick={() => setImportOpen((open) => !open)}
+            >
+              {importOpen ? 'Cancel import' : 'Import'}
+            </Button>
+            <Button
+              type="button"
+              buttonSize="s"
+              buttonType="muted"
+              disabled={disabled || !activeShape}
+              onClick={() => dispatch({ type: 'deleteActiveShape' })}
+            >
+              Delete polygon
+            </Button>
+            <Button
+              type="button"
+              buttonSize="s"
+              buttonType="negative"
+              disabled={disabled || shapes.length === 0}
+              onClick={() => void handleClearAll()}
+            >
+              Clear all
+            </Button>
+          </div>
+        </div>
+
+        {importOpen ? (
+          <div className={styles.import}>
+            <TextareaField
+              id={`${ctx.fieldPath}-import`}
+              name="import"
+              label="Coordinates or GeoJSON"
+              hint="Paste GeoJSON (FeatureCollection, Feature, Polygon, MultiPolygon), a coordinate array, or one “longitude, latitude” pair per line. Separate shapes with a blank line."
+              placeholder={'-9.1393, 38.7223\n-9.1350, 38.7250\n-9.1300, 38.7200'}
+              value={importText}
+              onChange={(value) => {
+                setImportText(value);
+                setImportError(undefined);
+              }}
+              textareaInputProps={{ rows: 6, monospaced: true }}
+            />
+            {importError ? <FieldError>{importError}</FieldError> : null}
+            <div className={styles.importActions}>
+              <Button
+                type="button"
+                buttonSize="s"
+                buttonType="primary"
+                disabled={!importText.trim()}
+                onClick={handleImport}
+              >
+                Add to map
+              </Button>
+            </div>
+          </div>
+        ) : null}
+      </div>
     </Canvas>
   );
 }

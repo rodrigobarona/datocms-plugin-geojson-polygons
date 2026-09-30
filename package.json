@@ -1,6 +1,6 @@
 {
   "name": "datocms-plugin-geojson-polygons",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Draw and edit GeoJSON polygons on a map inside a DatoCMS JSON field.",
   "homepage": "https://github.com/rodrigobarona/datocms-plugin-geojson-polygons",
   "repository": {
