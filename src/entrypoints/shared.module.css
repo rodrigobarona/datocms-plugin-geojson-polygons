@@ -1,0 +1,5 @@
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: var(--spacing-l);
+}

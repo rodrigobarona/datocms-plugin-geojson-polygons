@@ -1,0 +1,30 @@
+.frame {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.map {
+  position: absolute;
+  inset: 0;
+}
+
+.hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  z-index: 1;
+  width: max-content;
+  max-width: calc(100% - 120px);
+  padding: var(--spacing-s) var(--spacing-m);
+  transform: translateX(-50%);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 15%);
+  color: var(--base-body-color);
+  font-size: var(--font-size-xs);
+  text-align: center;
+  pointer-events: none;
+}

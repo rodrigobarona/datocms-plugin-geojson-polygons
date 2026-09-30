@@ -1,0 +1,79 @@
+.toolbar,
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-s);
+}
+
+.toolbar {
+  margin-bottom: var(--spacing-s);
+}
+
+.footer {
+  margin-top: var(--spacing-m);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-s);
+}
+
+.shapes {
+  margin-top: var(--spacing-s);
+  overflow-x: auto;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.coordinates {
+  max-height: 200px;
+  margin-top: var(--spacing-s);
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.table th,
+.table td {
+  padding: 4px var(--spacing-m);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  background: var(--light-bg-color);
+  color: var(--light-body-color);
+  font-weight: 600;
+}
+
+.table tr:last-child td {
+  border-bottom: 0;
+}
+
+.import {
+  margin-top: var(--spacing-m);
+}
+
+.importActions {
+  display: flex;
+  margin-top: var(--spacing-s);
+}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+public/maplibre-gl-*.mjs
+.DS_Store
+*.local
+*.tsbuildinfo
