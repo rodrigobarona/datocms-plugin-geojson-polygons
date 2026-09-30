@@ -8,9 +8,9 @@ The map uses [MapLibre GL](https://maplibre.org/) with [OpenFreeMap](https://ope
 
 ## Demo
 
-![Drawing, editing, importing, and switching basemaps in the polygon field](docs/demo.gif)
+![Drawing, editing, importing, and switching basemaps in the polygon field](https://raw.githubusercontent.com/rodrigobarona/datocms-plugin-geojson-polygons/main/docs/demo.gif)
 
-The demo draws a polygon point by point, drags a vertex, inserts a point on an edge, undoes a step, switches to the satellite basemap, imports coordinates, and fits the map to every shape. [Watch the full-quality MP4](docs/demo.mp4).
+The demo draws a polygon point by point, drags a vertex, inserts a point on an edge, undoes a step, switches to the satellite basemap, imports coordinates, and fits the map to every shape. [Watch the full-quality MP4](https://raw.githubusercontent.com/rodrigobarona/datocms-plugin-geojson-polygons/main/docs/demo.mp4).
 
 ## What editors see
 
