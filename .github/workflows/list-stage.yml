@@ -1,0 +1,16 @@
+name: List npm stage
+
+on:
+  workflow_dispatch:
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - run: npm stage list datocms-plugin-geojson-polygons
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
