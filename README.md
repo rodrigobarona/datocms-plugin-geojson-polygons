@@ -2,15 +2,17 @@
 
 ![GeoJSON Polygons cover](marketplace/cover.jpg)
 
-Draw and edit polygons on a map inside a DatoCMS JSON field. Editors click on an inline map to outline areas such as delivery zones, venues, neighborhoods, or campus boundaries. The field stores standard GeoJSON that any frontend can render.
+Draw and edit polygons on a map inside a DatoCMS JSON field. Editors outline delivery zones, service areas, venues, neighborhoods, campuses, or sales territories, and the field stores standard GeoJSON that any frontend can render.
 
-The map uses [MapLibre GL](https://maplibre.org/) with [OpenFreeMap](https://openfreemap.org/) tiles, so no API key or billing account is needed.
+One field can hold many polygons. Each locale of a localized field keeps its own set. There is no API key and no map billing: the map uses [MapLibre GL](https://maplibre.org/) with [OpenFreeMap](https://openfreemap.org/) tiles.
 
 ## Demo
 
 ![Drawing, editing, importing, and switching basemaps in the polygon field](https://raw.githubusercontent.com/rodrigobarona/datocms-plugin-geojson-polygons/main/docs/demo.gif)
 
 The demo draws a polygon point by point, drags a vertex, inserts a point on an edge, undoes a step, switches to the satellite basemap, imports coordinates, and fits the map to every shape. [Watch the full-quality MP4](https://raw.githubusercontent.com/rodrigobarona/datocms-plugin-geojson-polygons/main/docs/demo.mp4).
+
+On the DatoCMS Marketplace, that recording plays in the preview above this README. The player comes from `datoCmsPlugin.previewImage` in `package.json`, which points at `docs/demo.mp4` inside the published package. The README keeps the GIF, the same split official plugins use.
 
 ## What editors see
 
@@ -25,6 +27,7 @@ The demo draws a polygon point by point, drags a vertex, inserts a point on an e
 - **Undo** reverts the last change, one step at a time, including drags and deletions.
 - **Import** accepts GeoJSON (`FeatureCollection`, `Feature`, `Polygon`, `MultiPolygon`, `LineString`), raw coordinate arrays, or one `longitude, latitude` pair per line, with a blank line between shapes.
 - A layers button on the map switches between the Bright, Liberty, Dark, and Satellite basemaps.
+- Vertex dots grow and shrink with the zoom, and stay small enough that a dense outline remains readable. The click target is larger than the dot, so dragging and removing a point stays easy.
 
 Scroll-wheel zoom needs Ctrl or ⌘ held down, and touch panning needs two fingers, so scrolling the record form never moves the map by accident.
 
@@ -98,7 +101,7 @@ MapLibre runs its tile parsing in a module worker. `scripts/copy-maplibre-worker
 
 ### Releasing
 
-Publishing a GitHub release runs `.github/workflows/publish.yml`, which checks the project and publishes it to npm with the `NPM_TOKEN` repository secret. DatoCMS picks up new versions for the Marketplace automatically.
+Publishing a GitHub release runs `.github/workflows/publish.yml`, which checks the project and publishes it to npm with the `NPM_TOKEN` repository secret. The package includes `dist`, the images in `marketplace/`, and `docs/demo.mp4`, which the Marketplace plays as the listing preview. DatoCMS picks up new versions automatically.
 
 ## Credits
 

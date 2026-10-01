@@ -33,6 +33,7 @@ const LAYERS = {
   outline: 'geojson-polygons-outline',
   line: 'geojson-polygons-line',
   points: 'geojson-polygons-points',
+  pointHits: 'geojson-polygons-point-hits',
 } as const;
 
 const SHAPE_LAYERS = [LAYERS.fill, LAYERS.outline, LAYERS.line];
@@ -71,6 +72,21 @@ function addOverlay(map: MapLibreMap): void {
   }
 
   const isActive: ExpressionSpecification = ['boolean', ['get', 'isActive'], false];
+  const pointRadius = (
+    atZoom5: readonly [number, number],
+    atZoom14: readonly [number, number],
+    atZoom18: readonly [number, number],
+  ): ExpressionSpecification => [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    5,
+    ['case', isActive, atZoom5[0], atZoom5[1]],
+    14,
+    ['case', isActive, atZoom14[0], atZoom14[1]],
+    18,
+    ['case', isActive, atZoom18[0], atZoom18[1]],
+  ];
 
   if (!map.getLayer(LAYERS.fill)) {
     map.addLayer({
@@ -116,19 +132,23 @@ function addOverlay(map: MapLibreMap): void {
       source: SOURCES.points,
       paint: {
         'circle-color': ['get', 'color'],
-        'circle-radius': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          5,
-          ['case', isActive, 3, 2],
-          14,
-          ['case', isActive, 7, 4],
-          18,
-          ['case', isActive, 9, 5],
-        ],
+        'circle-radius': pointRadius([2, 1.5], [5, 3], [6.5, 3.5]),
         'circle-stroke-color': '#ffffff',
-        'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 14, 2],
+        'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 14, 1.5],
+      },
+    });
+  }
+
+  // Same points, drawn larger and almost invisible, so dragging stays easy.
+  if (!map.getLayer(LAYERS.pointHits)) {
+    map.addLayer({
+      id: LAYERS.pointHits,
+      type: 'circle',
+      source: SOURCES.points,
+      paint: {
+        'circle-color': '#000000',
+        'circle-opacity': 0.01,
+        'circle-radius': pointRadius([3, 2], [7, 4], [9, 5]),
       },
     });
   }
@@ -176,7 +196,7 @@ function readActiveVertex(feature: MapGeoJSONFeature | undefined): Vertex | null
 }
 
 function vertexAt(map: MapLibreMap, point: PointLike): Vertex | null {
-  return readActiveVertex(map.queryRenderedFeatures(point, { layers: [LAYERS.points] })[0]);
+  return readActiveVertex(map.queryRenderedFeatures(point, { layers: [LAYERS.pointHits] })[0]);
 }
 
 function shapeAt(map: MapLibreMap, point: PointLike): string | null {
@@ -295,8 +315,8 @@ export default function MapView({
       handlersRef.current.onAddPoint([event.lngLat.lng, event.lngLat.lat]);
     };
 
-    map.on('mousedown', LAYERS.points, startDrag);
-    map.on('touchstart', LAYERS.points, startDrag);
+    map.on('mousedown', LAYERS.pointHits, startDrag);
+    map.on('touchstart', LAYERS.pointHits, startDrag);
     map.on('mousemove', moveDrag);
     map.on('touchmove', moveDrag);
     map.on('mouseup', endDrag);
@@ -304,12 +324,12 @@ export default function MapView({
     map.on('touchend', endDrag);
     map.on('touchcancel', endDrag);
 
-    map.on('mouseenter', LAYERS.points, (event) => {
+    map.on('mouseenter', LAYERS.pointHits, (event) => {
       if (!dragging && !disabledRef.current && readActiveVertex(event.features?.[0])) {
         canvasStyle.cursor = 'grab';
       }
     });
-    map.on('mouseleave', LAYERS.points, () => {
+    map.on('mouseleave', LAYERS.pointHits, () => {
       if (!dragging) {
         canvasStyle.cursor = '';
       }
