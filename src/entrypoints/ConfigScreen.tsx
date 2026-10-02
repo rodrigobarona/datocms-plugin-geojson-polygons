@@ -95,7 +95,16 @@ export default function ConfigScreen({ ctx }: ConfigScreenProps) {
             hint="Satellite imagery is licensed CC BY-NC-SA 4.0 by EOX, which does not allow commercial use."
             value={BASEMAP_OPTIONS.find((option) => option.value === basemap) ?? null}
             onChange={handleBasemapChange}
-            selectInputProps={{ isClearable: false, options: BASEMAP_OPTIONS }}
+            selectInputProps={{
+              isClearable: false,
+              isSearchable: false,
+              menuPlacement: 'bottom',
+              menuPosition: 'fixed',
+              menuPortalTarget:
+                typeof document === 'undefined' ? null : document.body,
+              maxMenuHeight: 220,
+              options: BASEMAP_OPTIONS,
+            }}
           />
         </FieldGroup>
         <div className={styles.actions}>
